@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: "Ubuntu", "Arial";
 }
 
 body {
@@ -34,10 +35,6 @@ body {
     display: flex;
 }
 
-.sprite-nav {
-    text-align: center;
-}
-
 .card {
     border-radius: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .5);
@@ -58,9 +55,15 @@ body {
     flex-direction: column;
 }
 
-.card-info p {
+.card-info div p {
     font-size: 12px;
-    font-family: "Ubuntu", "Arial";
+    margin: 0 auto;
+}
+
+
+.pokemon-card {
+    display: none;
+    flex-direction: column;
 }
 
 #pokemon-sprite {
@@ -71,11 +74,43 @@ body {
 
 #ball-sprite {
     margin: 0 auto;
-    max-width: 22px;
+    max-width: 23px;
     max-height: 22px;
-    visibility: hidden;
 }
 
-.poke-card {
+.poke-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     padding: 5px 0;
+}
+
+.btn-catch_action {
+    margin: 10px auto;
+    color: #fff;
+    background-color: #115DCB;
+    display: inline-block;
+    font-weight: bolder;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 16px;
+    line-height: 18px;
+    border-radius: 5px;
+}
+
+.type {
+    margin: 0 2px;
+    color: white;
+    border-radius: 2px;
+    background-color: red;
+    padding: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .5)
 }

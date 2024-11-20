@@ -1,27 +1,20 @@
-import { ZONES } from "./dex.js";
+import { ZONES, TYPES_BG } from "./dex.js";
 import { MINI_MAP } from "./map.js";
 import { fetchPokemon } from "./api.js";
 
 const PLAYER = document.getElementById('player');
 const MAP_INFO = document.getElementById('map').getBoundingClientRect();
 const STEP = 16;
-const POKE_INFO = document.getElementById('poke-info');
+
+const P_NAME = document.getElementById('p_name');
 const CARD_INFO = document.querySelector('.card-info');
 const POKEMON_SPRITE = document.getElementById('pokemon-sprite');
-const ball = document.getElementById('ball-sprite')
+const P_CARD = document.querySelector('.pokemon-card');
+const P_LEVEL = document.getElementById('level');
+const TYPES_LIST = document.querySelector('.types')
 
-let currentIndex = 0;
-
-const sprites = [
-    'spr1.png',
-    'spr2.png',
-    'spr3.png',
-];
-
-function changeSprite(i) {
-    currentIndex = (currentIndex + i + sprites.length) % sprites.length;
-    PLAYER.src = 'assets/player_sprites/' + sprites[currentIndex];
-};
+const ALERT = document.querySelector('.alert')
+const MESSAGE = document.getElementById('message');
 
 
 function start() {
@@ -81,9 +74,10 @@ function start() {
 }
 
 async function encounter(index) {
-    const ZONA = ZONES[index]
+    const ZONA = ZONES[index];
     let detected = false;
-    CARD_INFO.style.backgroundColor = ZONA.bgColor
+    CARD_INFO.style.backgroundColor = ZONA.bgColor;
+    TYPES_LIST.innerHTML = "";
 
 
     if (ZONA.pokemons) {
@@ -91,11 +85,31 @@ async function encounter(index) {
         //console.log(RATE);
         for (let pokemon of ZONA.pokemons) {
             if (pokemon.rate >= RATE) {
-                let poke_name = pokemon.name;
-                POKE_INFO.innerHTML = "<u> " + poke_name + " </u> Appeared!";
-                const data = await fetchPokemon(poke_name.toLowerCase());
+                const data = await fetchPokemon(pokemon.name.toLowerCase());
+                let variation = ZONA.variation
+                const randomVariation = Math.floor(Math.random() * (variation * 2 + 1)) - variation;
+                let level = ZONA.baseLevel - randomVariation
+
+                P_NAME.innerHTML = "<u> " + pokemon.name + " </u> Appeared!";
                 POKEMON_SPRITE.src = data["sprites"].front_default;
-                ball.style.visibility = "visible";
+                P_LEVEL.innerHTML = "Level: "+level
+
+                P_CARD.style.display = "flex";
+
+                ALERT.style.display = "none";
+
+
+                for (let type of data["types"]) {
+                    let typeName = type["type"].name
+                    const span = document.createElement("span");
+                    span.classList.add("type");
+                    span.textContent = typeName.toUpperCase();
+
+                    TYPES_LIST.appendChild(span);
+
+                    const match = TYPES_BG.find(item => item.type === typeName);
+                    span.style.backgroundColor = match.color
+                }
                 detected = true;
                 break;
             }
@@ -103,9 +117,9 @@ async function encounter(index) {
     }
 
     if (!detected) {
-        POKE_INFO.innerHTML = "Couldn't find anything.<br>Try moving to another spot.";
-        POKEMON_SPRITE.src = ""
-        ball.style.visibility = "hidden";
+        P_CARD.style.display = "none"
+        MESSAGE.innerHTML = "Couldn't find anything. <br> Try moving to another spot.";
+        ALERT.style.display = "flex";
     }
 }
 

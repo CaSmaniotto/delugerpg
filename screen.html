@@ -17,22 +17,24 @@
 
             <div class="card">
                 <div class="card-info">
-                    <img id="pokemon-sprite" src="" alt="">
-                    <img id="ball-sprite" src="/assets/empty_pokeball.png" alt="">
-                    <div class="poke-card">
-                        <p id="poke-info">Couldn't find anything. <br>
+                    <div class="alert">
+                        <p id="message">Couldn't find anything. <br>
                             Try moving to another spot.
                         </p>
+                    </div>
+                    <div class="pokemon-card">
+                        <img id="pokemon-sprite" src="" alt="">
+                        <img id="ball-sprite" src="/assets/empty_pokeball.png" alt="">
+                        <div class="poke-info">
+                            <p id="p_name"></p>
+                            <p><span id="level"></span> <span id="HP">HP: 34</span></p>
+                            <p class="types"></p>
+                        </div>
+                        <input class="btn-catch_action" id="catchmon" type="submit" value="Try to Catch It">
                     </div>
                 </div>
 
             </div>
-        </div>
-
-        <div class="sprite-nav">
-            <p>Change character sprite</p>
-            <button onclick="changeSprite(-1)">◄</button>
-            <button onclick="changeSprite(1)">►</button>
         </div>
     </div>
 </body>
