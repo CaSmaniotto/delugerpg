@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <title>Delugerpg</title>
+</head>
+<body>
+    <div class="screen">
+        <div class="loadmap">
+            <img id="map" src="assets/map.png" alt="">
+            <img id="player" src="assets/player_sprites/spr1.png" alt="">
+
+            <div class="card">
+                <div class="card-info">
+                    <img id="pokemon-sprite" src="" alt="">
+                    <img id="ball-sprite" src="/assets/empty_pokeball.png" alt="">
+                    <div class="poke-card">
+                        <p id="poke-info">Couldn't find anything. <br>
+                            Try moving to another spot.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="sprite-nav">
+            <p>Change character sprite</p>
+            <button onclick="changeSprite(-1)">◄</button>
+            <button onclick="changeSprite(1)">►</button>
+        </div>
+    </div>
+</body>
+<script type="module" src="script.js"></script>
+</html>
