@@ -27,13 +27,32 @@
                         <img id="ball-sprite" src="/assets/empty_pokeball.png" alt="">
                         <div class="poke-info">
                             <p id="p_name"></p>
-                            <p><span id="level"></span> <span id="HP">HP: 34</span></p>
+                            <p><span id="level"></span> <span id="HP"></span></p>
                             <p class="types"></p>
                         </div>
                         <input class="btn-catch_action" id="catchmon" type="submit" value="Try to Catch It">
                     </div>
                 </div>
-
+                <div id="directions">
+                    <div class="row">
+                        <a title="Move North-West" id="move_nw" data-dir="nw"><div id="dr-nw" class="m-move"></div></a>
+                        <a title="Move North" id="move_n" data-dir="n"><div id="dr-n" class="m-move"></div></a>
+                        <a title="Move North-East" id="move_ne" data-dir="ne"><div id="dr-ne" class="m-move"></div></a>
+                    </div>
+                    
+                    <div class="row">
+                        <a title="Move West" id="move_w" data-dir="w"><div id="dr-w" class="m-move"></div></a>
+                        <span id="dirsprite"><img src="assets/player_sprites/spr1.png" alt="You"></span>
+                        <a title="Move East" id="move_e" data-dir="e"><div id="dr-e" class="m-move"></div></a>
+                    </div>
+                    
+                    <div class="row">
+                        <a title="Move South-West" id="move_sw" data-dir="sw"><div id="dr-sw" class="m-move"></div></a>
+                        <a title="Move South" id="move_s" data-dir="s"><div id="dr-s" class="m-move"></div></a>
+                        <a title="Move South-East" id="move_se" data-dir="se"><div id="dr-se" class="m-move"></div></a>
+                    </div>
+                    <label>keyboard navigation enabled</label>
+                </div>
             </div>
         </div>
     </div>

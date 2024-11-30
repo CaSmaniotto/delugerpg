@@ -4,59 +4,57 @@ import { fetchPokemon } from "./api.js";
 
 const PLAYER = document.getElementById('player');
 const MAP_INFO = document.getElementById('map').getBoundingClientRect();
-const STEP = 16;
+const TILE_SIZE = 16;
 
-const P_NAME = document.getElementById('p_name');
-const CARD_INFO = document.querySelector('.card-info');
-const POKEMON_SPRITE = document.getElementById('pokemon-sprite');
-const P_CARD = document.querySelector('.pokemon-card');
-const P_LEVEL = document.getElementById('level');
-const TYPES_LIST = document.querySelector('.types')
+const UI = {
+    name: document.getElementById('p_name'),
+    cardInfo: document.querySelector('.card-info'),
+    sprite: document.getElementById('pokemon-sprite'),
+    card: document.querySelector('.pokemon-card'),
+    level: document.getElementById('level'),
+    types: document.querySelector('.types'),
+    hp: document.getElementById('HP'),
+    alert: document.querySelector('.alert'),
+    message: document.getElementById('message'),
+};
 
-const ALERT = document.querySelector('.alert')
-const MESSAGE = document.getElementById('message');
+let playerPosition = { x: 15, y: 16 }; // Posição no mapa
+let screenPosition = {
+    x: MAP_INFO.width / 2.02,
+    y: MAP_INFO.height / 1.98,
+};
 
+function initializePlayer() {
+    PLAYER.style.left = `${screenPosition.x}px`;
+    PLAYER.style.top = `${screenPosition.y}px`;
+}
 
-function start() {
-    // Posição inicial do personagem na tela
-    let posX = MAP_INFO.width / 2.02;
-    let posY = MAP_INFO.height / 1.98;
+function movePlayer(deltaX, deltaY) {
+    const { x, y } = playerPosition;
+    const newX = x + deltaX;
+    const newY = y + deltaY;
 
-    PLAYER.style.left = `${posX}px`;
-    PLAYER.style.top = `${posY}px`;
-    
-    // Posição inicial do personagem no mapa
-    let x = 15;
-    let y = 16;
+    if (
+        newX >= 0 && newX < MINI_MAP[0].length &&
+        newY >= 0 && newY < MINI_MAP.length &&
+        MINI_MAP[newY][newX] !== 0
+    ) {
+        playerPosition = { x: newX, y: newY };
+        screenPosition.x += deltaX * TILE_SIZE;
+        screenPosition.y += deltaY * TILE_SIZE;
 
-    // Função para mover o personagem
-    function movePlayer(deltaX, deltaY) {
-        let new_x = x + deltaX;
-        let new_y = y + deltaY;
+        PLAYER.style.left = `${screenPosition.x}px`;
+        PLAYER.style.top = `${screenPosition.y}px`;
 
-        if (
-            new_x >= 0 && new_x < MINI_MAP.length &&  // Verifica linha válida
-            new_y >= 0 && new_y < MINI_MAP.length && // Verifica coluna válida
-            MINI_MAP[new_y][new_x] !== 0 // Verifica se o caminho é livre
-        ) {
-            posX += deltaX * STEP;
-            posY += deltaY * STEP;
-
-            PLAYER.style.left = `${posX}px`;
-            PLAYER.style.top = `${posY}px`;
-
-            x = new_x;
-            y = new_y;
-
-            let zone = MINI_MAP[new_y][new_x]
-            encounter(zone)
-        }
+        triggerEncounter(MINI_MAP[newY][newX]);
     }
+}
 
+function setupKeyboardControls() {
     document.addEventListener('keydown', (event) => {
         if (event.repeat) return;
 
-        switch (event.key) {
+        switch (event.code) {
             case 'ArrowUp':
                 movePlayer(0, -1);
                 break;
@@ -71,56 +69,96 @@ function start() {
                 break;
         }
     });
+
+    document.getElementById('move_n').addEventListener('click', () => { // cima
+        movePlayer(0, -1);
+    });
+    document.getElementById('move_nw').addEventListener('click', () => { // diagonal cima esq
+        movePlayer(-1, -1);
+    });
+    document.getElementById('move_ne').addEventListener('click', () => { // diagonal cima dir
+        movePlayer(1, -1);
+    });
+    document.getElementById('move_s').addEventListener('click', () => { // baixo
+        movePlayer(0, 1);
+    });
+    document.getElementById('move_sw').addEventListener('click', () => { // diagonal baixo esq
+        movePlayer(-1, 1);
+    });
+    document.getElementById('move_se').addEventListener('click', () => { // diagonal baixo dir
+        movePlayer(1, 1);
+    });
+    document.getElementById('move_w').addEventListener('click', () => { // esq
+        movePlayer(-1, 0);
+    });
+    document.getElementById('move_e').addEventListener('click', () => { // dir
+        movePlayer(1, 0);
+    });
 }
 
-async function encounter(index) {
-    const ZONA = ZONES[index];
-    let detected = false;
-    CARD_INFO.style.backgroundColor = ZONA.bgColor;
-    TYPES_LIST.innerHTML = "";
+async function triggerEncounter(zoneIndex) {
+    const zone = ZONES[zoneIndex];
+    let isEncountered = false;
+    UI.cardInfo.style.backgroundColor = zone.bgColor;
+    UI.types.innerHTML = "";
 
-
-    if (ZONA.pokemons) {
-        let RATE = Math.floor(Math.random() * 100);
-        //console.log(RATE);
-        for (let pokemon of ZONA.pokemons) {
-            if (pokemon.rate >= RATE) {
-                const data = await fetchPokemon(pokemon.name.toLowerCase());
-                let variation = ZONA.variation
-                const randomVariation = Math.floor(Math.random() * (variation * 2 + 1)) - variation;
-                let level = ZONA.baseLevel - randomVariation
-
-                P_NAME.innerHTML = "<u> " + pokemon.name + " </u> Appeared!";
-                POKEMON_SPRITE.src = data["sprites"].front_default;
-                P_LEVEL.innerHTML = "Level: "+level
-
-                P_CARD.style.display = "flex";
-
-                ALERT.style.display = "none";
-
-
-                for (let type of data["types"]) {
-                    let typeName = type["type"].name
-                    const span = document.createElement("span");
-                    span.classList.add("type");
-                    span.textContent = typeName.toUpperCase();
-
-                    TYPES_LIST.appendChild(span);
-
-                    const match = TYPES_BG.find(item => item.type === typeName);
-                    span.style.backgroundColor = match.color
-                }
-                detected = true;
+    if (zone.pokemons) {
+        const rate = Math.random() * 100;
+        for (let pokemon of zone.pokemons) {
+            if (rate <= pokemon.rate) {
+                await displayPokemon(pokemon, zone);
+                isEncountered = true;
                 break;
             }
         }
     }
 
-    if (!detected) {
-        P_CARD.style.display = "none"
-        MESSAGE.innerHTML = "Couldn't find anything. <br> Try moving to another spot.";
-        ALERT.style.display = "flex";
+    if (!isEncountered) {
+        displayNoEncounterMessage();
     }
 }
 
-start()
+async function displayPokemon(pokemon, zone) {
+    const data = await fetchPokemon(pokemon.name.toLowerCase());
+    const randomVariation = Math.floor(Math.random() * (zone.variation * 2 + 1)) - zone.variation;
+    const level = Math.max(zone.baseLevel - randomVariation, 1);
+
+    UI.name.innerHTML = `<u>${pokemon.name}</u> appeared!`;
+    UI.sprite.src = data.sprites.front_default;
+    UI.level.textContent = `Level: ${level}`;
+    UI.card.style.display = "flex";
+    UI.alert.style.display = "none";
+
+    const hpStat = data.stats.find(stat => stat.stat.name === "hp");
+    UI.hp.textContent = `HP: ${hpStat.base_stat}`;
+
+    UI.sprite.classList.add("shake");
+    UI.sprite.addEventListener("animationend", () => {
+        UI.sprite.classList.remove("shake");
+    });
+
+    for (let typeInfo of data.types) {
+        const typeName = typeInfo.type.name;
+        const span = document.createElement("span");
+        span.classList.add("type");
+        span.textContent = typeName.toUpperCase();
+
+        const match = TYPES_BG.find(item => item.type === typeName);
+        if (match) span.style.backgroundColor = match.color;
+
+        UI.types.appendChild(span);
+    }
+}
+
+function displayNoEncounterMessage() {
+    UI.card.style.display = "none";
+    UI.message.innerHTML = "Couldn't find anything. <br> Try moving to another spot.";
+    UI.alert.style.display = "flex";
+}
+
+function start() {
+    initializePlayer();
+    setupKeyboardControls();
+}
+
+start();

@@ -35,6 +35,10 @@ body {
     display: flex;
 }
 
+#message {
+    font-weight: 500;
+}
+
 .card {
     border-radius: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .5);
@@ -49,7 +53,7 @@ body {
     margin-top: 30px;
     background-color: #b7ffc7;
     transition: background-color 1000ms;
-    height: 248px;
+    height: 218px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -83,6 +87,7 @@ body {
     flex-direction: column;
     gap: 5px;
     padding: 5px 0;
+    font-weight: 500;
 }
 
 .btn-catch_action {
@@ -113,4 +118,96 @@ body {
     background-color: red;
     padding: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .5)
+}
+
+@keyframes shake {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    20%, 60% {
+      transform: translateY(-3px);
+    }
+    40%, 80% {
+      transform: translateY(3px);
+    }
+  }
+  
+.shake {
+    animation: shake 0.2s ease-in-out;
+}
+
+#dirsprite {
+    height: 32px;
+    width: 32px;
+    text-align: center;
+    display: inline-block;
+}
+
+#directions {
+    margin: 25px 0px;
+    padding: 10px 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    min-width: 110px;
+    text-align: center;
+}
+
+#directions>.row>a {
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#directions>.row>a>#dr-nw.m-move {
+    background-position: -96px 64px;
+}
+
+#directions>.row>a>#dr-n.m-move {
+    background-position: -64px 64px;
+}
+
+#directions>.row>a>#dr-ne.m-move {
+    background-position: -32px 64px;
+}
+
+#directions>.row>a>#dr-w.m-move {
+    background-position: -96px 32px;
+}
+
+#directions>.row>a>#dr-e.m-move {
+    background-position: 0 64px;
+}
+
+#directions>.row>a>#dr-sw.m-move {
+    background-position: -64px 32px;
+}
+
+#directions>.row>a>#dr-s.m-move {
+    background-position: -32px 32px;
+}
+
+#directions>.row>a>#dr-se.m-move {
+    background-position: 0 32px;
+}
+
+#directions>.row>a>div {
+    background-image: url("assets/dir.png");
+    width: 32px;
+    height: 32px;
+}
+
+label {
+    margin-top: 10px;
+    font-size: 11px !important;
+    text-align: center;
+    font: inherit;
+    vertical-align: baseline;
 }
